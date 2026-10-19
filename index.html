@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalPulse - Tamil Nadu Local Services Marketplace</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css?v=20261018_3">
+  <script>
+    // Immediate Inline Navigation (Executes instantly on click with zero delay)
+    function openRequesterView() {
+      document.getElementById('first-page-view').style.display = 'none';
+      document.getElementById('provider-flow-view').style.display = 'none';
+      document.getElementById('requester-flow-view').style.display = 'block';
+      document.getElementById('btn-back-home').style.display = 'inline-flex';
+      const badge = document.getElementById('nav-mode-badge');
+      if (badge) { badge.style.display = 'inline-flex'; badge.className = 'current-role-pill'; }
+      document.getElementById('nav-mode-text').innerHTML = '<i class="fa-solid fa-user"></i> Service Requester';
+      document.getElementById('btn-track-bookings').style.display = 'inline-flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.app && typeof window.app.renderRequesterProviders === 'function') {
+        window.app.currentView = 'requester';
+        window.app.renderCategoryChips();
+        window.app.renderRequesterProviders();
+      }
+    }
+
+    function openProviderFlow() {
+      document.getElementById('first-page-view').style.display = 'none';
+      document.getElementById('requester-flow-view').style.display = 'none';
+      document.getElementById('provider-flow-view').style.display = 'block';
+      document.getElementById('btn-back-home').style.display = 'inline-flex';
+      const badge = document.getElementById('nav-mode-badge');
+      if (badge) { badge.style.display = 'inline-flex'; badge.className = 'current-role-pill provider'; }
+      document.getElementById('nav-mode-text').innerHTML = '<i class="fa-solid fa-briefcase"></i> Service Provider';
+      document.getElementById('btn-track-bookings').style.display = 'none';
+      document.getElementById('provider-setup-card').style.display = 'block';
+      document.getElementById('provider-dashboard-view').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.app) {
+        window.app.currentView = 'provider';
+      }
+    }
+
+    function showFirstPage() {
+      document.getElementById('first-page-view').style.display = 'block';
+      document.getElementById('provider-flow-view').style.display = 'none';
+      document.getElementById('requester-flow-view').style.display = 'none';
+      document.getElementById('btn-back-home').style.display = 'none';
+      document.getElementById('nav-mode-badge').style.display = 'none';
+      document.getElementById('btn-track-bookings').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.app) {
+        window.app.currentView = 'first_page';
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- ==========================================
+       TOP NAVIGATION BAR
+       ========================================== -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="javascript:void(0)" class="brand-logo" onclick="app.showFirstPage()">
+        <div class="brand-icon">
+          <i class="fa-solid fa-handshake-angle"></i>
+        </div>
+        <span>LocalPulse</span>
+      </a>
+
+      <div class="nav-location">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>Tamil Nadu: <strong>Chennai • Coimbatore • Madurai • Trichy • Salem</strong></span>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Back to Main Two-Button Screen -->
+        <button id="btn-back-home" class="btn-outline" onclick="app.showFirstPage()" style="display:none;">
+          <i class="fa-solid fa-house"></i>
+          <span>Home (Choose Role)</span>
+        </button>
+
+        <!-- Active Mode Badge -->
+        <div id="nav-mode-badge" class="current-role-pill" style="display:none;">
+          <span id="nav-mode-text">Role</span>
+        </div>
+
+        <!-- Customer Bookings Tracker Button -->
+        <button id="btn-track-bookings" class="btn-primary" onclick="app.openMyBookingsModal()" style="display:none;">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Track Bookings (<span id="my-bookings-count">0</span>)</span>
+        </button>
+
+        <!-- Database Audit Trail Button (Available anywhere) -->
+        <button id="btn-db-logs" class="btn-outline" onclick="app.openDatabaseModal()" title="View SQLite Database Audit Trail" style="border-color:#cbd5e1;">
+          <i class="fa-solid fa-database" style="color:#2563eb;"></i>
+          <span>Database Logs</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       PAGE 1: FIRST PAGE (ONLY TWO BUTTONS AS REQUESTED)
+       ======================================================== -->
+  <section id="first-page-view" class="first-page-hero">
+    <div class="container" style="max-width: 900px; text-align: center; padding: 60px 20px;">
+      
+      <div class="first-page-pill">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Tamil Nadu Local Services Marketplace</span>
+      </div>
+      
+      <h1 class="first-page-title">Welcome to LocalPulse</h1>
+      <p class="first-page-subtitle">
+        Connecting local customers and verified service professionals across Tamil Nadu.<br>
+        Please select your role to continue:
+      </p>
+
+      <!-- THE TWO MAIN BUTTONS -->
+      <div class="two-buttons-wrapper">
+        
+        <!-- BUTTON 1: SERVICE REQUESTER -->
+        <button type="button" class="big-role-button requester-btn-card" onclick="openRequesterView()">
+          <div class="role-icon-box">
+            <i class="fa-solid fa-user-magnifying-glass"></i>
+          </div>
+          <div class="role-text-box">
+            <span class="role-badge-tag">Looking for Help?</span>
+            <h2>Service Requester</h2>
+            <p>Search, compare, and book verified plumbers, electricians, cleaners, tutors & technicians in Tamil Nadu with real-time tracking.</p>
+          </div>
+          <div class="role-action-arrow">
+            <span>Continue</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </button>
+
+        <!-- BUTTON 2: SERVICE PROVIDER -->
+        <button type="button" class="big-role-button provider-btn-card" onclick="openProviderFlow()">
+          <div class="role-icon-box">
+            <i class="fa-solid fa-briefcase"></i>
+          </div>
+          <div class="role-text-box">
+            <span class="role-badge-tag provider-tag">Professional / Technician</span>
+            <h2>Service Provider</h2>
+            <p>Register your service, set your visiting charges in ₹ INR, receive instant customer requests, and accept or decline jobs.</p>
+          </div>
+          <div class="role-action-arrow">
+            <span>Continue</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </button>
+
+      </div>
+
+      <div class="first-page-trust-bar">
+        <span><i class="fa-solid fa-check"></i> 100% Verified Pros in Tamil Nadu</span>
+        <span><i class="fa-solid fa-indian-rupee-sign"></i> Transparent INR Pricing</span>
+        <span><i class="fa-solid fa-bolt"></i> Live Booking & Dispatch Tracking</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================
+       PAGE 2: SERVICE PROVIDER FLOW (REGISTRATION & DASHBOARD)
+       ======================================================== -->
+  <section id="provider-flow-view" style="display:none; padding: 40px 0 80px;">
+    <div class="container">
+
+      <!-- SECTION 2A: PROVIDER REGISTRATION FORM (Shown if setting up profile) -->
+      <div id="provider-setup-card" class="provider-setup-container">
+        <div class="setup-header">
+          <div class="setup-badge">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Step 1 of 2: Create Your Service Profile</span>
+          </div>
+          <h2>Service Provider Registration</h2>
+          <p>Fill in what service you provide, which place in Tamil Nadu you operate in, and how much you charge.</p>
+        </div>
+
+        <form id="provider-setup-form" onsubmit="app.saveProviderProfile(event)" class="setup-form-body">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-name">1. Your Full Name / Business Name *</label>
+              <input type="text" id="p-name" class="form-control" placeholder="e.g. Suresh Kumar" required>
+            </div>
+            <div class="form-group">
+              <label for="p-phone">Phone Number (+91) *</label>
+              <input type="tel" id="p-phone" class="form-control" placeholder="+91 98401 23456" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-category">2. What Service Do You Provide? *</label>
+              <select id="p-category" class="form-control" required>
+                <option value="plumber">Plumber (Pipe leak, tap fix, geyser plumbing)</option>
+                <option value="electrician">Electrician (Short circuit, MCB, fans, wiring)</option>
+                <option value="cleaner">Cleaner (Full home deep clean, bathroom, sofa)</option>
+                <option value="tutor">Tutor (School Maths, Science, Board exam prep)</option>
+                <option value="technician">Technician (AC servicing, washing machine, fridge)</option>
+                <option value="carpenter">Carpenter (Furniture repair, woodwork, locks)</option>
+                <option value="painter">Painter (Interior, exterior, whitewash)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="p-experience">Years of Experience *</label>
+              <input type="number" id="p-experience" class="form-control" placeholder="e.g. 10" min="1" max="50" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-city">3. Which Place in Tamil Nadu? (City/District) *</label>
+              <select id="p-city" class="form-control" required>
+                <option value="Chennai">Chennai</option>
+                <option value="Coimbatore">Coimbatore</option>
+                <option value="Madurai">Madurai</option>
+                <option value="Tiruchirappalli">Tiruchirappalli (Trichy)</option>
+                <option value="Salem">Salem</option>
+                <option value="Tirunelveli">Tirunelveli</option>
+                <option value="Erode">Erode</option>
+                <option value="Vellore">Vellore</option>
+                <option value="Thanjavur">Thanjavur</option>
+                <option value="Tiruppur">Tiruppur</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="p-area">Specific Locality / Neighborhood *</label>
+              <input type="text" id="p-area" class="form-control" placeholder="e.g. Anna Nagar / RS Puram / KK Nagar" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-visiting-charge">4. How Much Do You Charge? (Visiting Charge in ₹ INR) *</label>
+              <div class="input-with-symbol">
+                <span class="currency-symbol">₹</span>
+                <input type="number" id="p-visiting-charge" class="form-control" placeholder="e.g. 350" min="100" max="5000" required style="padding-left: 36px;">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="p-avail">Today's Availability</label>
+              <select id="p-avail" class="form-control">
+                <option value="true">Available Today (Instant Bookings)</option>
+                <option value="false">Available from Tomorrow</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Specific Services & Rates in ₹ INR *</label>
+            <div class="form-row" style="margin-bottom: 10px;">
+              <input type="text" id="p-sub1-name" class="form-control" placeholder="Service 1 (e.g. Pipe Leak Repair)" required>
+              <input type="number" id="p-sub1-price" class="form-control" placeholder="Rate in ₹ (e.g. 349)" required>
+            </div>
+            <div class="form-row">
+              <input type="text" id="p-sub2-name" class="form-control" placeholder="Service 2 (e.g. Drain Unclogging)" required>
+              <input type="number" id="p-sub2-price" class="form-control" placeholder="Rate in ₹ (e.g. 449)" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="p-bio">Short Professional Description</label>
+            <textarea id="p-bio" class="form-control" rows="2" placeholder="Tell customers about your skills and quality assurance..."></textarea>
+          </div>
+
+          <div style="text-align: right; margin-top: 24px;">
+            <button type="submit" class="btn-primary" style="background:#059669; padding: 14px 28px; font-size: 1rem;">
+              <i class="fa-solid fa-check-circle"></i>
+              <span>Save Profile & Open Provider Dashboard</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- SECTION 2B: PROVIDER DASHBOARD (Shown after profile is created/selected) -->
+      <div id="provider-dashboard-view" style="display:none;">
+        <div class="dashboard-header" style="background:white; padding:24px; border-radius:16px; border:1px solid var(--border-subtle); margin-bottom:24px;">
+          <div class="dashboard-title-box">
+            <div class="hero-pill" style="margin-bottom: 8px;">
+              <i class="fa-solid fa-id-badge"></i>
+              <span id="dash-active-account-badge">Your Active Profile: <strong>Marcus</strong></span>
+            </div>
+            <h1>Service Provider Dashboard</h1>
+            <p>Your profile is <strong>active and listed in Tamil Nadu</strong>! Incoming customer requests will pop up here.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-outline" onclick="app.showProviderSetupForm()">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Edit / Register Another Profile</span>
+            </button>
+            <button class="btn-primary" onclick="app.simulateIncomingRequest()" style="background:#059669;">
+              <i class="fa-solid fa-bell"></i>
+              <span>Simulate Customer Request (Test Popup)</span>
+            </button>
+            <button class="btn-outline" onclick="app.openDatabaseModal()" style="border-color:#6366f1; color:#4f46e5;">
+              <i class="fa-solid fa-database"></i>
+              <span>View SQLite Database (Audit Logs)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Statistics Cards -->
+        <div class="dash-stats-grid">
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon blue"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="dash-stat-info">
+              <span>Total Requests</span>
+              <h3 id="dash-total-bookings">0</h3>
+            </div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon emerald"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="dash-stat-info">
+              <span>Earned Revenue</span>
+              <h3 id="dash-total-revenue">₹0</h3>
+            </div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon purple"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="dash-stat-info">
+              <span>Active / En Route</span>
+              <h3 id="dash-active-jobs">0</h3>
+            </div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon amber"><i class="fa-solid fa-star"></i></div>
+            <div class="dash-stat-info">
+              <span>Rating</span>
+              <h3 id="dash-rating-text">5.0 ★ (New)</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bookings Queue Table -->
+        <div class="dash-table-container">
+          <div class="dash-table-header">
+            <div>
+              <h2>Incoming Customer Requests & Active Jobs</h2>
+              <span style="font-size:0.85rem; color:var(--text-muted)">Accept or decline incoming requests, then advance the live tracking status</span>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer</th>
+                  <th>Service Required</th>
+                  <th>Date & Time</th>
+                  <th>Location in Tamil Nadu</th>
+                  <th>Price</th>
+                  <th>Current Status</th>
+                  <th>Your Actions</th>
+                </tr>
+              </thead>
+              <tbody id="provider-table-tbody">
+                <!-- Rendered dynamically by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================
+       PAGE 3: SERVICE REQUESTER FLOW (SEARCH, BOOK, TRACK)
+       ======================================================== -->
+  <main id="requester-flow-view" style="display:none;">
+    
+    <!-- Hero Search Section -->
+    <section class="hero-section">
+      <div class="container hero-content">
+        <div class="hero-pill">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>100% Background-Checked Professionals Across Tamil Nadu</span>
+        </div>
+        <h1 class="hero-title">What service do you need?</h1>
+        <p class="hero-desc">
+          Choose a service and select your Tamil Nadu city or locality to view verified local providers:
+        </p>
+
+        <!-- Search Bar -->
+        <div class="search-box-wrapper">
+          <div class="search-input-group">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="req-search-input" placeholder="Type service (e.g. Tap leak, AC service, Maths tutor...)" oninput="app.handleRequesterSearch(this.value)">
+          </div>
+          <div class="search-divider"></div>
+          <select id="req-location-select" class="search-location-select" onchange="app.handleRequesterLocation(this.value)">
+            <option value="all">All Locations (Tamil Nadu)</option>
+            <option value="Chennai">Chennai (Anna Nagar, T. Nagar, Velachery, OMR)</option>
+            <option value="Coimbatore">Coimbatore (RS Puram, Gandhipuram, Peelamedu)</option>
+            <option value="Madurai">Madurai (KK Nagar, Anna Nagar, Simmakkal)</option>
+            <option value="Tiruchirappalli">Trichy (Thillai Nagar, Cantonment)</option>
+            <option value="Salem">Salem (Fairlands, Hasthampatti)</option>
+            <option value="Tirunelveli">Tirunelveli (Palayamkottai, Junction)</option>
+            <option value="Erode">Erode (Brough Road, Thindal)</option>
+            <option value="Vellore">Vellore (Katpadi, Gandhi Nagar)</option>
+            <option value="Thanjavur">Thanjavur (Medical College Road)</option>
+            <option value="Tiruppur">Tiruppur (Avinashi Road)</option>
+          </select>
+          <button type="button" class="search-submit-btn" onclick="app.triggerRequesterSearch()">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span>Find Providers</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Filter Chips -->
+    <section class="container">
+      <div class="category-filter-section">
+        <div class="category-chips" id="requester-category-chips">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Controls & Count Bar -->
+      <div class="marketplace-controls">
+        <div class="controls-left">
+          <div class="results-count">
+            Found <span id="requester-results-count">0</span> Available Providers in Tamil Nadu
+          </div>
+          <label class="filter-toggle-label">
+            <input type="checkbox" id="req-filter-available-today" onchange="app.toggleRequesterAvailToday(this.checked)">
+            <span><i class="fa-regular fa-clock" style="color:#059669;"></i> Available Today</span>
+          </label>
+        </div>
+
+        <div class="controls-right">
+          <label for="req-sort-by" style="font-size:0.88rem; color:var(--text-muted); font-weight:500;">Sort By:</label>
+          <select id="req-sort-by" class="sort-select" onchange="app.handleRequesterSort(this.value)">
+            <option value="recommended">Recommended</option>
+            <option value="rating-high">Highest Rated</option>
+            <option value="price-low">Price: Low to High (₹)</option>
+            <option value="price-high">Price: High to Low (₹)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Providers Grid -->
+      <div class="providers-grid" id="requester-providers-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       MODAL 1: INCOMING REQUEST POPUP FOR PROVIDER (ACCEPT / DECLINE)
+       ======================================================== -->
+  <div id="incoming-popup-modal" class="modal-overlay">
+    <div class="modal-window incoming-modal-window" style="max-width: 580px;">
+      
+      <div class="incoming-alert-banner">
+        <div class="incoming-alert-icon">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 2px;">🔔 Incoming Booking Request!</h3>
+          <p style="font-size: 0.85rem; opacity: 0.9;">A customer is requesting your service in Tamil Nadu.</p>
+        </div>
+      </div>
+
+      <div class="modal-body" style="padding: 24px;">
+        <div class="incoming-request-card">
+          <div class="incoming-detail-row">
+            <span style="color:var(--text-muted); font-size:0.85rem;">Booking Tracking ID:</span>
+            <strong id="inc-id" style="color:var(--primary); font-size:1rem;">BK-0000</strong>
+          </div>
+          <div class="incoming-detail-row">
+            <span style="color:var(--text-muted); font-size:0.85rem;">Service Required:</span>
+            <strong id="inc-service" style="color:var(--dark);">Pipe Leak Repair</strong>
+          </div>
+          <div class="incoming-detail-row">
+            <span style="color:var(--text-muted); font-size:0.85rem;">Customer Name:</span>
+            <span id="inc-name" style="font-weight:700;">Anandhi R.</span>
+          </div>
+          <div class="incoming-detail-row">
+            <span style="color:var(--text-muted); font-size:0.85rem;">Customer Phone:</span>
+            <span id="inc-phone" style="font-weight:700;">+91 98402 34567</span>
+          </div>
+          <div class="incoming-detail-row">
+            <span style="color:var(--text-muted); font-size:0.85rem;">Service Address:</span>
+            <span id="inc-address" style="font-weight:600; text-align:right; max-width:60%;">Anna Nagar, Chennai</span>
+          </div>
+          <div class="incoming-detail-row">
+            <span style="color:var(--text-muted); font-size:0.85rem;">Scheduled Date & Slot:</span>
+            <span id="inc-slot" style="font-weight:700; color:#059669;">Tomorrow, 10:00 AM - 12:00 PM</span>
+          </div>
+          <div class="incoming-detail-row" style="background:white; padding:10px 12px; border-radius:8px; margin-top:8px;">
+            <span style="font-weight:700; color:var(--dark);">Total Amount in ₹:</span>
+            <strong id="inc-price" style="font-size:1.25rem; color:#059669;">₹398</strong>
+          </div>
+        </div>
+
+        <div id="inc-notes-wrap" style="display:none; font-size:0.85rem; background:#fff; border:1px solid var(--border-subtle); padding:10px 14px; border-radius:8px; margin-bottom:16px;">
+          <strong>Problem Notes:</strong> <span id="inc-notes">Details</span>
+        </div>
+
+        <p style="font-size:0.88rem; color:var(--text-muted); text-align:center; margin-bottom:16px;">
+          <strong>You can choose to Accept or Decline this request.</strong><br>
+          Accepting starts the live tracking pipeline for the customer.
+        </p>
+
+        <!-- THE TWO CHOICE BUTTONS FOR PROVIDER -->
+        <div class="decision-actions-grid">
+          <button type="button" class="btn-decline-request" onclick="app.providerDecision(false)">
+            <i class="fa-solid fa-xmark"></i>
+            <span>Decline Request</span>
+          </button>
+          <button type="button" class="btn-accept-request" onclick="app.providerDecision(true)">
+            <i class="fa-solid fa-check"></i>
+            <span>Accept Booking</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 2: CUSTOMER BOOKING FORM (PICK SLOT & DESCRIBE PROBLEM)
+       ======================================================== -->
+  <div id="customer-book-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Book Service Appointment</h3>
+          <span id="book-provider-subtitle" style="font-size:0.85rem; color:var(--text-muted);">With Pro</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="app.closeModal('customer-book-modal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="book-form" onsubmit="app.handleBookingSubmit(event)">
+          <input type="hidden" id="book-provider-id">
+
+          <div class="form-group">
+            <label for="book-subservice">Select Specific Service *</label>
+            <select id="book-subservice" class="form-control" required onchange="app.updateBookingCalculation()">
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-date">Preferred Date *</label>
+              <input type="date" id="book-date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="book-timeslot">Time Window *</label>
+              <select id="book-timeslot" class="form-control" required>
+                <option value="09:00 AM - 11:00 AM">Morning (09:00 AM - 11:00 AM)</option>
+                <option value="11:30 AM - 01:30 PM">Midday (11:30 AM - 01:30 PM)</option>
+                <option value="02:00 PM - 04:00 PM" selected>Afternoon (02:00 PM - 04:00 PM)</option>
+                <option value="04:30 PM - 06:30 PM">Evening (04:30 PM - 06:30 PM)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-name">Your Full Name *</label>
+              <input type="text" id="book-name" class="form-control" placeholder="e.g. Ramesh K." required>
+            </div>
+            <div class="form-group">
+              <label for="book-phone">Your Phone Number (+91) *</label>
+              <input type="tel" id="book-phone" class="form-control" placeholder="+91 98401 23456" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="book-address">Your Service Address in Tamil Nadu *</label>
+            <input type="text" id="book-address" class="form-control" placeholder="Door No., Street, Area (e.g. 15, 3rd Cross, Anna Nagar, Chennai)" required>
+          </div>
+
+          <div class="form-group">
+            <label for="book-problem">Describe Your Problem / Issue *</label>
+            <textarea id="book-problem" class="form-control" rows="2" placeholder="Describe what needs fixing (e.g. kitchen sink pipe is leaking under the cabinet)" required></textarea>
+          </div>
+
+          <!-- Transparent Price Box in ₹ -->
+          <div class="pricing-summary">
+            <div class="price-row">
+              <span>Service Estimate:</span>
+              <span id="price-subtotal">₹0</span>
+            </div>
+            <div class="price-row">
+              <span>Marketplace Safety & Insurance Fee:</span>
+              <span id="price-fee">₹49</span>
+            </div>
+            <div class="price-row total">
+              <span>Total Estimated Amount:</span>
+              <span id="price-total">₹0</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button type="button" class="btn-outline" onclick="app.closeModal('customer-book-modal')">Cancel</button>
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Send Booking Request</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 3: CUSTOMER LIVE TRACKING MODAL (STEPPER PIPELINE)
+       ======================================================== -->
+  <div id="my-bookings-modal" class="modal-overlay">
+    <div class="modal-window" style="max-width: 760px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Live Service Booking Tracker</h3>
+          <span style="font-size:0.85rem; color:var(--text-muted);">Real-time status updates as your provider accepts, arrives, and completes the work</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="app.closeModal('my-bookings-modal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="my-bookings-body">
+        <!-- Rendered dynamically with live stepper -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: PROVIDER PROFILE & REVIEWS MODAL
+       ======================================================== -->
+  <div id="details-modal" class="modal-overlay">
+    <div class="modal-window" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Provider Profile & Rate Card</h3>
+        <button type="button" class="modal-close-btn" onclick="app.closeModal('details-modal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="details-modal-body">
+        <!-- Rendered by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 5: SQLITE BACKEND DATABASE AUDIT LOGS MODAL
+       ======================================================== -->
+  <div id="database-logs-modal" class="modal-overlay">
+    <div class="modal-window" style="max-width: 980px; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header" style="background: #1e293b; color: white;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h3 class="modal-title" style="color:white;"><i class="fa-solid fa-database" style="color:#38bdf8;"></i> SQLite Database Audit Trail</h3>
+            <span style="background: #0f172a; color:#38bdf8; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; border: 1px solid #334155;">marketplace.db</span>
+          </div>
+          <span style="font-size:0.83rem; color:#94a3b8;">Full relational audit trail: when booked, who booked, whether accepted/declined, and when completed</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button type="button" class="btn-outline" onclick="app.fetchDatabaseLogs(true)" style="color: white; border-color: #475569; padding: 6px 12px; font-size: 0.8rem;">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh DB
+          </button>
+          <button type="button" class="modal-close-btn" onclick="app.closeModal('database-logs-modal')" style="color: #cbd5e1;">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" id="database-logs-body" style="padding: 20px; overflow-y: auto; flex: 1;">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="data.js?v=20261018_3"></script>
+  <script src="app.js?v=20261018_3"></script>
+</body>
+</html>
